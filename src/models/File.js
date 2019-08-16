@@ -13,7 +13,8 @@ const File = new Schema(
 );
 
 File.virtual("url").get(function() {
-  return `http://localhost:9000/files/${encodeURIComponent(this.path)}`;
+  return `${process.env.URL ||
+    "http://localhost:9000"}/files/${encodeURIComponent(this.path)}`;
 });
 
 module.exports = model("File", File);

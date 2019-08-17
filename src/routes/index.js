@@ -16,5 +16,6 @@ route.post("/boxes", BoxController.store);
 route.get("/boxes/:id", BoxController.show);
 
 route.post("/boxes/:id/files", multer().single("file"), FileController.store);
+route.delete("/boxes/:id/files", FileController.remove);
 
 module.exports = route;

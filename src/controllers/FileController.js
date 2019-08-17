@@ -23,29 +23,42 @@ class FileController {
   }
 
   async remove(req, res) {
-    const { id } = req.param;
-    const { file_id } = req.body;
-
-    const box = await Box.findById(id);
-    const file = await File.findById(file_id);
+    const { id } = req.params;
+    const file = await File.findById(id);
+    const box = await Box.findOne({ files: id }).exec();
     let fIndex = box.files.findIndex(
       f => JSON.stringify(f._id) == JSON.stringify(file._id)
     );
     if (fIndex > -1) {
       try {
-        box.files.splice(1, fIndex);
+        box.files.splice(fIndex, 1);
         await box.save();
+
         let fName = file.path;
         await file.remove();
-        await require("../helpers/removeFile")(fName);
+        await require("../helpers/removeFile").removeFile(fName);
+
         req.io.to(box._id).emit("remove", file._id);
         return res.json({
-          deleted: true,
-          files: await require("../helpers/removeFile").readdir()
+          deleted: true
         });
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     }
     return res.send(fIndex);
+  }
+
+  async changeName(req, res) {
+    const { id } = req.params;
+    const file = await File.findById(id);
+    const box = await Box.findOne({ files: id }).exec();
+    file.title = req.body.new_name;
+    await file.save();
+    req.io.to(box._id).emit("changed", file);
+    return res.json({
+      changed: true
+    });
   }
 }
 

@@ -12,11 +12,12 @@ route.get("/users", (req, res) => {
   });
 });
 
+route.get("/boxes/", BoxController.showAll);
 route.post("/boxes", BoxController.store);
 route.get("/boxes/:id", BoxController.show);
 
 route.post("/boxes/:id/files", multer().single("file"), FileController.store);
 route.delete("/files/:id", FileController.remove);
-route.put('/files/:id', FileController.changeName)
+route.put("/files/:id", FileController.changeName);
 
 module.exports = route;

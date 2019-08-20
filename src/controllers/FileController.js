@@ -36,7 +36,11 @@ class FileController {
 
         let fName = file.path;
         await file.remove();
-        await require("../helpers/removeFile").removeFile(fName);
+        try{
+          await require("../helpers/removeFile").removeFile(fName);
+        } catch(err) {
+          null;
+        }
 
         req.io.to(box._id).emit("remove", file._id);
         return res.json({

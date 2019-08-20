@@ -29,6 +29,7 @@ class App {
     );
     this.app.use(require("./routes/"));
 
+    require("./helpers/verifyFiles")();
     this.server.listen(this.PORT, () =>
       console.log(`Listening on http://127.0.0.1:${this.PORT}`)
     );
